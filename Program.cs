@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-
+// ...
+//.....
 // 날씨 정보를 가져오는 함수
 static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? apiKey = null)
 {
     // API 키가 없으면 환경변수에서 가져오기
     apiKey ??= Environment.GetEnvironmentVariable("OPENWEATHER_API_KEY");
-    
+
     if (string.IsNullOrEmpty(apiKey))
     {
         Console.WriteLine("경고: OPENWEATHER_API_KEY 환경변수가 설정되지 않았습니다.");
@@ -21,7 +22,7 @@ static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? a
     {
         using HttpClient client = new();
         HttpResponseMessage response = await client.GetAsync(url);
-        
+
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"오류: 날씨 정보를 가져올 수 없습니다. 상태 코드: {response.StatusCode}");
@@ -30,7 +31,7 @@ static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? a
 
         string json = await response.Content.ReadAsStringAsync();
         WeatherResponse? weatherResponse = JsonSerializer.Deserialize<WeatherResponse>(json);
-        
+
         if (weatherResponse == null)
         {
             Console.WriteLine("오류: 날씨 데이터를 파싱할 수 없습니다.");
