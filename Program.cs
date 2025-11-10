@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Text.Json  ;
+﻿using System.Text.Json;
 
 // 메인 프로그램
 Console.WriteLine("날씨 정보 조회 프로그램");
@@ -51,7 +49,7 @@ static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? a
                 Humidity = weatherResponse.Main.Humidity,
                 WindSpeed = weatherResponse.Wind?.Speed ?? 0
             };
-        
+
         Console.WriteLine("오류: 날씨 데이터를 파싱할 수 없습니다.");
         return null;
     }

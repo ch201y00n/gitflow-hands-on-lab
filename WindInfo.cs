@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-public abstract class WindInfo
+namespace GitflowHandsOnLab;
+
+public class WindInfo
 {
     [JsonPropertyName("speed")]
     public double Speed { get; init; }

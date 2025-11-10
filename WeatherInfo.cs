@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-public abstract class WeatherInfo
+namespace GitflowHandsOnLab;
+
+public class WeatherInfo
 {
     [JsonPropertyName("description")]
     public string Description { get; init; } = string.Empty;
