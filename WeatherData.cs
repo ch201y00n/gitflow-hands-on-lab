@@ -1,6 +1,4 @@
-﻿namespace gitflow_hands_on_lab;
-
-public class WeatherData
+﻿public class WeatherData
 {
     public string City { get; init; } = string.Empty;
     public double Temperature { get; init; }
