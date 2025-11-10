@@ -1,7 +1,15 @@
 ﻿using System.Text.Json;
 using gitflow_hands_on_lab;
 
-// TODO: 새로운 작업
+// 메인 프로그램
+Console.WriteLine("날씨 정보 조회 프로그램");
+Console.WriteLine("도시를 입력하세요 (기본값: Seoul):");
+var cityInput = Console.ReadLine();
+var city = string.IsNullOrWhiteSpace(cityInput) ? "Seoul" : cityInput.Trim();
+
+var weather = await GetWeatherAsync(city);
+DisplayWeather(weather);
+return;
 
 // 날씨 정보를 가져오는 함수
 static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? apiKey = null)
@@ -17,12 +25,12 @@ static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? a
         return null;
     }
 
-    string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric&lang=kr";
+    var url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric&lang=kr";
 
     try
     {
         using HttpClient client = new();
-        HttpResponseMessage response = await client.GetAsync(url);
+        var response = await client.GetAsync(url);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -53,24 +61,11 @@ static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? a
     }
 }
 
-// 메인 프로그램
-Console.WriteLine("날씨 정보 조회 프로그램");
-Console.WriteLine("도시를 입력하세요 (기본값: Seoul):");
-var cityInput = Console.ReadLine();
-var city = string.IsNullOrWhiteSpace(cityInput) ? "Seoul" : cityInput.Trim();
-
-var weather = await GetWeatherAsync(city);
-DisplayWeather(weather);
-return;
-
 // 날씨 정보 출력 함수
 static void DisplayWeather(WeatherData? weather)
 {
-    if (weather == null)
-    {
-        return;
-    }
-
+    if (weather == null) return;
+    
     Console.WriteLine("\n=== 날씨 정보 ===");
     Console.WriteLine($"도시: {weather.City}");
     Console.WriteLine($"온도: {weather.Temperature}°C");

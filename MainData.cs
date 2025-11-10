@@ -5,8 +5,8 @@ namespace gitflow_hands_on_lab;
 public class MainData
 {
     [JsonPropertyName("temp")]
-    public double Temp { get; set; }
+    public double Temp { get; init; }
     
     [JsonPropertyName("humidity")]
-    public int Humidity { get; set; }
+    public int Humidity { get; init; }
 }
