@@ -1,80 +1,20 @@
-﻿using System.Text.Json;
+using GitFlowHandsOnLab.Services;
 
-// TODO: 새로운 작업
+namespace GitFlowHandsOnLab;
 
-// 날씨 정보를 가져오는 함수
-static async Task<WeatherData?> GetWeatherAsync(string city = "Seoul", string? apiKey = null)
+public class Program
 {
-    // API 키가 없으면 환경변수에서 가져오기
-    apiKey ??= Environment.GetEnvironmentVariable("OPENWEATHER_API_KEY");
-
-    if (string.IsNullOrEmpty(apiKey))
+    public static async Task Main(string[] args)
     {
-        Console.WriteLine("경고: OPENWEATHER_API_KEY 환경변수가 설정되지 않았습니다.");
-        Console.WriteLine("OpenWeatherMap API 키를 발급받아 환경변수로 설정하세요.");
-        Console.WriteLine("예: set OPENWEATHER_API_KEY=your_api_key");
-        return null;
-    }
-
-    string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric&lang=kr";
-
-    try
-    {
-        using HttpClient client = new();
-        HttpResponseMessage response = await client.GetAsync(url);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"오류: 날씨 정보를 가져올 수 없습니다. 상태 코드: {response.StatusCode}");
-            return null;
-        }
-
-        var json = await response.Content.ReadAsStringAsync();
-        var weatherResponse = JsonSerializer.Deserialize<WeatherResponse>(json);
-
-        if (weatherResponse != null)
-            return new WeatherData
-            {
-                City = weatherResponse.Name,
-                Temperature = weatherResponse.Main.Temp,
-                Description = weatherResponse.Weather[0].Description,
-                Humidity = weatherResponse.Main.Humidity,
-                WindSpeed = weatherResponse.Wind?.Speed ?? 0
-            };
+        // 사용자로부터 도시 이름 입력받기
+        var city = WeatherDisplay.GetCityInput();
         
-        Console.WriteLine("오류: 날씨 데이터를 파싱할 수 없습니다.");
-        return null;
+        // 날씨 정보 가져오기
+        var config = new WeatherConfig(city: city);
+        using var weatherService = new WeatherService(config);
+        var weather = await weatherService.GetWeatherAsync();
+        
+        // 날씨 정보 출력
+        WeatherDisplay.DisplayWeather(weather);
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"오류 발생: {ex.Message}");
-        return null;
-    }
-}
-
-// 메인 프로그램
-Console.WriteLine("날씨 정보 조회 프로그램");
-Console.WriteLine("도시를 입력하세요 (기본값: Seoul):");
-var cityInput = Console.ReadLine();
-var city = string.IsNullOrWhiteSpace(cityInput) ? "Seoul" : cityInput.Trim();
-
-var weather = await GetWeatherAsync(city);
-DisplayWeather(weather);
-return;
-
-// 날씨 정보 출력 함수
-static void DisplayWeather(WeatherData? weather)
-{
-    if (weather == null)
-    {
-        return;
-    }
-
-    Console.WriteLine("\n=== 날씨 정보 ===");
-    Console.WriteLine($"도시: {weather.City}");
-    Console.WriteLine($"온도: {weather.Temperature}°C");
-    Console.WriteLine($"상태: {weather.Description}");
-    Console.WriteLine($"습도: {weather.Humidity}%");
-    Console.WriteLine($"풍속: {weather.WindSpeed} m/s");
-    Console.WriteLine("================\n");
 }
