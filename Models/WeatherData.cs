@@ -1,4 +1,6 @@
-﻿public class WeatherData
+namespace GitFlowHandsOnLab.Models;
+
+public class WeatherData
 {
     public string City { get; init; } = string.Empty;
     public double Temperature { get; init; }
